@@ -1,0 +1,27 @@
+return {
+    "romus204/tree-sitter-manager.nvim",
+    dependencies = {},
+    opts = {
+        ensure_installed = {
+            "bash",
+            "c",
+            "cpp",
+            "diff",
+            "go",
+            "html",
+            "javascript",
+            "kitty",
+            "latex",
+            "lua",
+            "make",
+            "markdown",
+            "python",
+            "robots_txt",
+            "rust",
+            "ssh_config",
+            "toml",
+            "yaml",
+            "zsh",
+        },
+    },
+}
