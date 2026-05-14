@@ -1,0 +1,3 @@
+# Use neovim as my editor globally.
+export VISUAL=nvim
+export EDITOR=nvim

@@ -1,0 +1,100 @@
+##############################################################################
+# Prompt Decoration
+##############################################################################
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+##############################################################################
+# Options & Aliases
+##############################################################################
+
+HISTFILE=~/.histfile
+HISTSIZE=2000
+SAVEHIST=2000
+
+setopt INC_APPEND_HISTORY_TIME  # Write to the history file on command completion, not on shell exit.
+setopt HIST_IGNORE_DUPS         # Don't record immediately repeated commands.
+setopt HIST_IGNORE_ALL_DUPS     # Delete previous instances of any duplicated command.
+setopt HIST_SAVE_NO_DUPS        # Remove duplicate commands before updating the history file.
+setopt HIST_FIND_NO_DUPS        # Omit duplicate commands when searching history.
+setopt HIST_IGNORE_SPACE        # Don't record commands starting with a space.
+setopt HIST_REDUCE_BLANKS       # Remove superfluous blanks before recording a command.
+setopt CORRECT                  # Suggest spelling corrections for unrecognized commands.
+setopt INTERACTIVE_COMMENTS     # Allow comments in interactive shells.
+
+alias ls='lsd'
+alias ll='ls -lA'
+alias df='dysk'
+alias grep='grep --color=auto'
+alias egrep='egrep --colour=auto'
+alias fgrep='fgrep --colour=auto'
+alias vi='nvim'
+alias vim='nvim'
+
+##############################################################################
+# Keybindings
+##############################################################################
+
+bindkey -v                       # vi keybindings
+bindkey "^[[3~" delete-char      # Make 'delete' actually delete.
+bindkey "^[[1;5C" forward-word   # Ctrl+Right moves right one word.
+bindkey "^[[1;5D" backward-word  # Ctrl+Left moves left one word.
+
+##############################################################################
+# Completion
+##############################################################################
+
+# Set up fzf keybindings and fuzzy completion.
+source <(fzf --zsh)
+
+# Configure fzf-tab:
+# Disable sort when completing `git checkout`.
+zstyle ':completion:*:git-checkout:*' sort false
+# Set descriptions format to enable group support.
+zstyle ':completion:*:descriptions' format '[%d]'
+# Set list-colors to enable filename colorizing.
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# Force zsh to not show the completion menu, allowing fzf-tab to capture the unambiguous prefix.
+zstyle ':completion:*' menu no
+# Preview a directory's content with lsd when completing `cd`.
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd'
+
+autoload -Uz compinit
+compinit
+
+##############################################################################
+# Plugins
+##############################################################################
+
+# Install zinit for managing zsh plugins, if missing.
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+zinit light romkatv/powerlevel10k          # Prompt decoration.
+zinit light Aloxaf/fzf-tab                 # Use fzf (fuzzy find) in zsh completions.
+zinit light hlissner/zsh-autopair          # Autocomplete paired delimiters.
+zinit light zsh-users/zsh-autosuggestions  # Suggest commands as you type.
+zinit light zsh-users/zsh-completions      # Additional completion definitions.
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+# Intelligent `cd`, with better jump/scoring system.
+eval "$(zoxide init zsh --cmd j)"
+
+# Set up broot's zsh shell integration.
+source /home/jdaymude/.config/broot/launcher/bash/br
