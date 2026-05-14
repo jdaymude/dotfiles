@@ -1,0 +1,23 @@
+[user]
+    name = Josh Daymude
+    email = jdaymude@asu.edu
+    signingkey = 099898DD096E2ADA
+
+[core]
+    editor = nvim
+    sshCommand = "ssh -i ${HOME}/.ssh/${HOSTNAME}_github"
+
+[init]
+    defaultBranch = main
+
+[commit]
+    gpgsign = true
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+[push]
+    autoSetupRemote = true
