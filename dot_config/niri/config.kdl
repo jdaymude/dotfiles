@@ -89,6 +89,14 @@ output "BOE NE160QDM-NZ6 Unknown" {
     focus-at-startup
 }
 
+// Center monitor at home.
+output "HP Inc. HP VH240a 6CM72902K2" {
+    mode "1920x1080@60.000"
+    scale 1
+    transform "normal"
+    position x=-1920 y=0
+}
+
 // Left/center monitor in Josh's Biodesign office.
 output "Dell Inc. DELL U2720Q 1CR03H3" {
     mode "3840x2160@59.997"
