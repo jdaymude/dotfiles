@@ -1,5 +1,12 @@
 return {
     "mason-org/mason-lspconfig.nvim",
+    dependencies = {
+        {
+            "mason-org/mason.nvim",
+            opts = {},
+        },
+        "neovim/nvim-lspconfig",
+    },
     opts = {
         -- See :help lspconfig-all for a complete list.
         ensure_installed = {
@@ -12,12 +19,5 @@ return {
             "texlab",          -- LaTeX
             "ty",              -- Python (type checking)
         },
-    },
-    dependencies = {
-        {
-            "mason-org/mason.nvim",
-            opts = {},
-        },
-        "neovim/nvim-lspconfig",
     },
 }
