@@ -1,21 +1,21 @@
 -- List all installed LSPs. Ideally, this would be read automatically from
 -- mason-lspconfig's opts.ensure_installed, but I don't know how to do that.
 local lsps = {
-    "clangd",          -- C/C++
-    "gopls",           -- Go
-    "lua_ls",          -- Lua
-    "markdown_oxide",  -- Markdown (Obsidian-like)
-    "ruff",            -- Python (linting and formatting)
-    "rust_analyzer",   -- Rust
-    "texlab",          -- LaTeX
-    "ty",              -- Python (type checking)
+    "clangd",         -- C/C++
+    "gopls",          -- Go
+    "lua_ls",         -- Lua
+    "markdown_oxide", -- Markdown (Obsidian-like)
+    "ruff",           -- Python (linting and formatting)
+    "rust_analyzer",  -- Rust
+    "texlab",         -- LaTeX
+    "ty",             -- Python (type checking)
 }
 
 -- Specify LSP-specific options and settings.
 local lsp_opts = {
     -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/lua_ls.lua
     -- https://luals.github.io/wiki/settings/
-    ["lua_ls"] = function (opts)
+    ["lua_ls"] = function(opts)
         opts.settings = {
             Lua = {
                 -- Tell the LSP to find Lua modules the same way Neovim does.
@@ -30,7 +30,7 @@ local lsp_opts = {
                 diagnostics = {
                     globals = { "vim" },
                 },
-                -- Tell the LSP about Neovim's runtime files.
+                -- Tell the LSP about Neovim's runtime files (ignoring self).
                 -- See https://github.com/neovim/nvim-lspconfig/issues/3189
                 workspace = {
                     checkThirdParty = false,
@@ -55,15 +55,50 @@ local lsp_opts = {
     -- end,
 }
 
+-- Get nvim-cmp completion capabilities to advertise to LSPs.
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+-- Define common keymaps for buffer-local, LSP-based functionality.
+-- https://stephenvantran.com/posts/2025-10-29-setup-neovim-lsp-011
+local on_attach = function(client, bufnr)
+    local map = function(modes, lhs, rhs, desc)
+        vim.keymap.set(modes, lhs, rhs, { buffer = bufnr, desc = desc })
+    end
+    map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+    map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+    map("n", "gr", vim.lsp.buf.references, "Go to references")
+    map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+    map("n", "H", vim.lsp.buf.hover, "Hover")
+    map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+    map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+    map("n", "<leader>e", vim.diagnostic.open_float, "Line diagnostics")
+
+    -- Show inlay hints.
+    if vim.lsp.inlay_hint then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+
+    -- Format on save (if the LSP provides a formatter).
+    if client.server_capabilities.documentFormattingProvider then
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            callback = function()
+                vim.lsp.buf.format({ async = false })
+            end,
+        })
+    end
+end
+
+-- Put it all together.
 for _, lsp in pairs(lsps) do
-    -- Advertise nvim-cmp completion capabilities to each LSP.
+    -- Define options common to all LSPs.
     local opts = {
+        on_attach = on_attach,
         capabilities = capabilities,
         update_in_insert = true,
     }
 
-    -- If I specified LSP-specific settings above, set them here.
+    -- Set LSP-specific settings, if I defined them above.
     if lsp_opts[lsp] then
         lsp_opts[lsp](opts)
     end
