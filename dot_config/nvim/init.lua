@@ -40,5 +40,8 @@ vim.opt.sessionoptions:remove("blank")
 -- Load all plugins using lazy.nvim.
 require("config.lazy")
 
+-- Load my LSP configurations.
+require("config.lsp")
+
 -- Color scheme.
 vim.cmd.colorscheme "catppuccin-nvim"
