@@ -2,8 +2,8 @@ return {
     "NeogitOrg/neogit",
     lazy = true,
     dependencies = {
-        "esmuellert/codediff.nvim",       -- View diffs.
-        "nvim-telescope/telescope.nvim",  -- Fuzzy finds.
+        "esmuellert/codediff.nvim",      -- View diffs.
+        "nvim-telescope/telescope.nvim", -- Fuzzy finds.
     },
     cmd = "Neogit",
     keys = {

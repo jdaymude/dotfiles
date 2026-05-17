@@ -15,7 +15,7 @@ return {
         local cmp = require("cmp")
 
         -- Use buffer source for `/` and `?`.
-        cmp.setup.cmdline({"/", "?"}, {
+        cmp.setup.cmdline({ "/", "?" }, {
             mapping = cmp.mapping.preset.cmdline(),
             sources = {
                 { name = "buffer" },
@@ -23,7 +23,7 @@ return {
         })
 
         -- Use command line and path source for `:`.
-        cmp.setup.cmdline({":"}, {
+        cmp.setup.cmdline({ ":" }, {
             mapping = cmp.mapping.preset.cmdline(),
             sources = cmp.config.sources({
                 { name = "path" },
