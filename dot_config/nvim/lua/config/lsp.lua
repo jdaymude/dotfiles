@@ -60,7 +60,7 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Define common keymaps for buffer-local, LSP-based functionality.
 -- https://stephenvantran.com/posts/2025-10-29-setup-neovim-lsp-011
-local on_attach = function(client, bufnr)
+local common_on_attach = function(client, bufnr)
     local map = function(modes, lhs, rhs, desc)
         vim.keymap.set(modes, lhs, rhs, { buffer = bufnr, desc = desc })
     end
@@ -93,7 +93,10 @@ end
 for _, lsp in pairs(lsps) do
     -- Define options common to all LSPs.
     local opts = {
-        on_attach = on_attach,
+        on_attach = {
+            existing = (vim.lsp.config[lsp] or {}).on_attach,
+            common = common_on_attach,
+        },
         capabilities = capabilities,
         update_in_insert = true,
     }
