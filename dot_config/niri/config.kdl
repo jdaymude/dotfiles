@@ -344,6 +344,12 @@ window-rule {
     clip-to-geometry true
 }
 
+// Set the overview wallpaper to match the usual wallpaper.
+layer-rule {
+    match namespace="^noctalia-overview*"
+    place-within-backdrop true
+}
+
 // Allow notification actions and window activation from Noctalia.
 debug {
     honor-xdg-activation-with-invalid-serial
@@ -366,10 +372,11 @@ binds {
 
     // Core launchers/quick accesses in Noctalia.
     Mod+Space hotkey-overlay-title="Run an Application" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
-    XF86Tools { spawn-sh "qs -c noctalia-shell ipc call settings toggle"; }
     Mod+T hotkey-overlay-title="Open a Terminal" { spawn "kitty"; }
     Mod+C hotkey-overlay-title="Open Clipboard" { spawn-sh "qs -c noctalia-shell ipc call launcher clipboard"; }
     Mod+E hotkey-overlay-title="Open Emoji Menu" { spawn-sh "qs -c noctalia-shell ipc call launcher emoji"; }
+    Mod+S hotkey-overlay-title="Open Settings" { spawn-sh "qs -c noctalia-shell ipc call settings toggle"; }
+    XF86Tools { spawn-sh "qs -c noctalia-shell ipc call settings toggle"; }
 
     Super+L hotkey-overlay-title="Lock & Suspend" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu lockAndSuspend"; }
 
