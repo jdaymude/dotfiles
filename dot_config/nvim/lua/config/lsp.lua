@@ -43,16 +43,41 @@ local lsp_opts = {
     end,
     -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/texlab.lua
     -- https://github.com/latex-lsp/texlab/wiki/Configuration
-    -- ["texlab"] = function (opts)
-    --     opts.settings = {
-    --         texlab = {
-    --             chktex = {
-    --                 onOpenAndSave = true,
-    --                 onEdit = true,
-    --             },
-    --         },
-    --     }
-    -- end,
+    ["texlab"] = function(opts)
+        opts.settings = {
+            texlab = {
+                -- I prefer to define how my LaTeX documents are built, often
+                -- because I'm doing some funny business with compiling things
+                -- multiple times (e.g., presenter vs. handout beamer slides)
+                -- or combining documents (e.g., proposals).
+                build = {
+                    executable = "make",
+                    args = { "-C", vim.fn.getcwd() },
+                    onSave = true,
+                    forwardSearchAfter = true,
+                },
+                -- Preview documents with okular.
+                -- https://github.com/latex-lsp/texlab/wiki/Previewing#okular
+                forwardSearch = {
+                    executable = "okular",
+                    args = { "--unique", "file:%p#src:%l%f" },
+                },
+                -- Use chktex to lint on open/save, but not while editing.
+                chktex = {
+                    onOpenAndSave = true,
+                    onEdit = false,
+                },
+                -- Point latexindent to my custom formatting settings.
+                latexFormatter = "latexindent",
+                latexindent = {
+                    ["local"] = "${HOME}/.config/latexindent/settings",
+                    modifyLineBreaks = true,
+                },
+                -- Do not set a maximum line length in BibTeX files.
+                formatterLineLength = 0,
+            },
+        }
+    end,
 }
 
 -- Get nvim-cmp completion capabilities to advertise to LSPs.
@@ -83,7 +108,7 @@ local common_on_attach = function(client, bufnr)
         vim.api.nvim_create_autocmd("BufWritePre", {
             buffer = bufnr,
             callback = function()
-                vim.lsp.buf.format({ async = false })
+                vim.lsp.buf.format({ async = true })
             end,
         })
     end

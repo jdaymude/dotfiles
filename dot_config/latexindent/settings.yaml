@@ -1,0 +1,44 @@
+# https://latexindentpl.readthedocs.io/en/latest/sec-default-user-local.html
+
+defaultIndent: "    "       # Use four spaces as the default indent.
+modifyLineBreaks:
+  oneSentencePerLine:
+    manipulateSentences: 1  # Enable one-sentence-per-line formatting.
+fineTuning:
+  modifyLineBreaks:         # Fine-tune the definition of a full stop.
+    betterFullStop: |-
+      (?x)                                # ignore spaces in the below
+      (?:                                 #
+        \.\)                              # .) 
+        (?!\h*[a-z])                      # not *followed by* a-z
+      )                                   #
+      |                                   # OR
+      (?:                                 #
+        (?<!                              # not *preceded by*
+          (?:                             #
+            (?:[eE]\.[gG])                # e.g OR E.g OR e.G OR E.G
+            |                             #
+            (?:[iI]\.[eE])                # i.e OR I.e OR i.E OR I.E
+            |                             #
+            (?:etc)                       # etc
+            |                             #
+            (?:[wW]\.[rR]\.[tT])          # w.r.t OR W.r.t OR w.R.t OR w.r.T OR W.R.t OR W.r.T OR w.R.T OR W.R.T
+            |                             #
+            (?:[wW]\.[lL]\.[oO]\.[gG])    # w.l.o.g OR any capitalization thereof
+            |                             #
+            (?:Dr)                        # Dr
+            |                             #
+            (?:Prof)                      # Prof
+          )                               #
+        )                                 #
+      )                                   # 
+      \.                                  # .
+      (?!                                 # not *followed by*
+        (?:                               #
+          [a-zA-Z0-9-~,\\]                # letter, number, hyphen, tilde, comma, or backslash
+          |                               #
+          \),                             # ),
+          |                               #
+          \)\.                            # ).
+        )                                 #
+      )                                   #
